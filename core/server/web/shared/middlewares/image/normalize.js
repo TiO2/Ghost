@@ -1,8 +1,8 @@
-const _ = require('lodash');
+const cloneDeep = require('lodash/cloneDeep');
 const path = require('path');
-const config = require('../../../config');
-const common = require('../../../lib/common');
-const image = require('../../../lib/image');
+const config = require('../../../../config');
+const common = require('../../../../lib/common');
+const image = require('../../../../lib/image');
 
 module.exports = function normalize(req, res, next) {
     const imageOptimizationOptions = config.get('imageOptimization');
@@ -35,7 +35,7 @@ module.exports = function normalize(req, res, next) {
             // CASE: push original image, we keep a copy of it
             const parsedFileName = path.parse(req.file.name);
             const newName = `${parsedFileName.name}_o${parsedFileName.ext}`;
-            req.files.push(Object.assign(_.cloneDeep(req.file), {path: originalPath, name: newName}));
+            req.files.push(Object.assign(cloneDeep(req.file), {path: originalPath, name: newName}));
 
             next();
         })

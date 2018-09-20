@@ -1,38 +1,37 @@
-var debug = require('ghost-ignition').debug('blog'),
-    path = require('path'),
-    express = require('express'),
-    setPrototypeOf = require('setprototypeof'),
+const debug = require('ghost-ignition').debug('blog');
+const path = require('path');
+const express = require('express');
 
-    // App requires
-    config = require('../../config'),
-    apps = require('../../services/apps'),
-    constants = require('../../lib/constants'),
-    storage = require('../../adapters/storage'),
-    urlService = require('../../services/url'),
+// App requires
+const config = require('../../config');
+const apps = require('../../services/apps');
+const constants = require('../../lib/constants');
+const storage = require('../../adapters/storage');
+const urlService = require('../../services/url');
 
-    // This should probably be an internal app
-    sitemapHandler = require('../../data/xml/sitemap/handler'),
+// This should probably be an internal app
+const sitemapHandler = require('../../data/xml/sitemap/handler');
 
-    // Route Service
-    siteRoutes = require('./routes'),
+// Route Service
+const siteRoutes = require('./routes');
 
-    // Global/shared middleware
-    cacheControl = require('../middleware/cache-control'),
-    errorHandler = require('../middleware/error-handler'),
-    frontendClient = require('../middleware/frontend-client'),
-    maintenance = require('../middleware/maintenance'),
-    prettyURLs = require('../middleware/pretty-urls'),
-    urlRedirects = require('../middleware/url-redirects'),
+// Global/shared middleware
+const cacheControl = require('../shared/middlewares/cache-control');
+const errorHandler = require('../shared/middlewares/error-handler');
+const frontendClient = require('../shared/middlewares/frontend-client');
+const maintenance = require('../shared/middlewares/maintenance');
+const prettyURLs = require('../shared/middlewares/pretty-urls');
+const urlRedirects = require('../shared/middlewares/url-redirects');
 
-    // local middleware
-    servePublicFile = require('../middleware/serve-public-file'),
-    staticTheme = require('../middleware/static-theme'),
-    customRedirects = require('../middleware/custom-redirects'),
-    serveFavicon = require('../middleware/serve-favicon'),
-    adminRedirects = require('../middleware/admin-redirects'),
+// local middleware
+const servePublicFile = require('../shared/middlewares/serve-public-file');
+const staticTheme = require('../shared/middlewares/static-theme');
+const customRedirects = require('../shared/middlewares/custom-redirects');
+const serveFavicon = require('../shared/middlewares/serve-favicon');
+const adminRedirects = require('../shared/middlewares/admin-redirects');
 
-    // middleware for themes
-    themeMiddleware = require('../../services/themes').middleware;
+// middleware for themes
+const themeMiddleware = require('../../services/themes').middleware;
 
 let router;
 
@@ -43,7 +42,7 @@ function SiteRouter(req, res, next) {
 module.exports = function setupSiteApp(options = {}) {
     debug('Site setup start');
 
-    var siteApp = express();
+    const siteApp = express();
 
     // ## App - specific code
     // set the view engine
@@ -104,8 +103,9 @@ module.exports = function setupSiteApp(options = {}) {
 
     // setup middleware for internal apps
     // @TODO: refactor this to be a proper app middleware hook for internal & external apps
-    config.get('apps:internal').forEach(function (appName) {
-        var app = require(path.join(config.get('paths').internalAppPath, appName));
+    config.get('apps:internal').forEach((appName) => {
+        const app = require(path.join(config.get('paths').internalAppPath, appName));
+
         if (app.hasOwnProperty('setupMiddleware')) {
             app.setupMiddleware(siteApp);
         }
@@ -132,7 +132,7 @@ module.exports = function setupSiteApp(options = {}) {
     debug('General middleware done');
 
     router = siteRoutes(options);
-    setPrototypeOf(SiteRouter, router);
+    Object.setPrototypeOf(SiteRouter, router);
 
     // Set up Frontend routes (including private blogging routes)
     siteApp.use(SiteRouter);
@@ -149,7 +149,7 @@ module.exports = function setupSiteApp(options = {}) {
 module.exports.reload = () => {
     // https://github.com/expressjs/express/issues/2596
     router = siteRoutes({start: true});
-    setPrototypeOf(SiteRouter, router);
+    Object.setPrototypeOf(SiteRouter, router);
 
     // re-initialse apps (register app routers, because we have re-initialised the site routers)
     apps.init();

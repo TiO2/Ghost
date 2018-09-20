@@ -1,24 +1,24 @@
-const express = require('express'),
-    // This essentially provides the controllers for the routes
-    api = require('../../../../api'),
+const express = require('express');
+// This essentially provides the controllers for the routes
+const api = require('../../../../api');
 
-    // Middleware
-    mw = require('./middleware'),
+// Middleware
+const mw = require('./middleware');
 
-    // API specific
-    auth = require('../../../../services/auth'),
-    cors = require('../../../middleware/api/cors'),
-    brute = require('../../../middleware/brute'),
+// API specific
+const auth = require('../../../../services/auth');
+const cors = require('../../../shared/middlewares/api/cors');
+const brute = require('../../../shared/middlewares/brute');
 
-    // Handling uploads & imports
-    tmpdir = require('os').tmpdir,
-    upload = require('multer')({dest: tmpdir()}),
-    validation = require('../../../middleware/validation'),
-    image = require('../../../middleware/image'),
+// Handling uploads & imports
+const tmpdir = require('os').tmpdir;
+const upload = require('multer')({dest: tmpdir()});
+const validation = require('../../../shared/middlewares/validation');
+const image = require('../../../shared/middlewares/image');
 
-    // Temporary
-    // @TODO find a more appy way to do this!
-    labs = require('../../../middleware/labs');
+// Temporary
+// @TODO find a more appy way to do this!
+const labs = require('../../../shared/middlewares/labs');
 
 module.exports = function apiRoutes() {
     const router = express.Router();

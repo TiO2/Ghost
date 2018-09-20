@@ -1,28 +1,21 @@
 // # API routes
-const debug = require('ghost-ignition').debug('api'),
-    boolParser = require('express-query-boolean'),
-    express = require('express'),
+const debug = require('ghost-ignition').debug('api');
+const boolParser = require('express-query-boolean');
+const express = require('express');
 
-    // routes
-    routes = require('./routes'),
+// routes
+const routes = require('./routes');
 
-    // Include the middleware
+// Include the middleware
 
-    // Shared
-    cacheControl = require('../../../middleware/cache-control'), // global, shared
-    maintenance = require('../../../middleware/maintenance'), // global, shared
-    errorHandler = require('../../../middleware/error-handler'); // global, shared
+// Shared
+const cacheControl = require('../../../shared/middlewares/cache-control'); // global, shared
+const maintenance = require('../../../shared/middlewares/maintenance'); // global, shared
+const errorHandler = require('../../../shared/middlewares/error-handler'); // global, shared
 
 module.exports = function setupApiApp() {
     debug('Content API v2 setup start');
     const apiApp = express();
-
-    // @TODO finish refactoring this away.
-    apiApp.use(function setIsAdmin(req, res, next) {
-        // api === isAdmin
-        res.isAdmin = true;
-        next();
-    });
 
     // API middleware
 
