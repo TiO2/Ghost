@@ -7,9 +7,9 @@ const shared = require('../../../shared');
 module.exports.authenticatePrivate = [
     shared.middlewares.api.cors,
     shared.middlewares.urlRedirects.adminRedirect,
-    shared.middlewares.prettyUrls
+    shared.middlewares.prettyUrls,
     auth.authenticate.authenticateAdminApiKey,
-    auth.authorize.requiresAuthorizedUserOrApiKey,
+    auth.authorize.requiresAuthorizedUserOrApiKey
 ];
 
 /**
